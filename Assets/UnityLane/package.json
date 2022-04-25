@@ -1,0 +1,13 @@
+{
+    "name": "com.qkrsogusl3.unitylane",
+    "displayName": "Unitylane",
+    "version": "0.0.1",
+    "unity": "2021.2",
+    "description": "Unity Setting Support",
+    "keywords": [
+    ],
+    "license": "MIT",
+    "category": "Scripting",
+    "dependencies": {
+    }
+}
