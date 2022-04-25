@@ -97,9 +97,16 @@ public abstract class LaneBase
     public void Run(string? laneName = null)
     {
         var name = string.IsNullOrEmpty(laneName) ? SelectedName : laneName;
-        var method = _laneMethods.First(m => m.Name.Equals(name));
-
-        method.Invoke(this, null);
+        try
+        {
+            var method = _laneMethods.First(m => m.Name.Equals(name));
+            method.Invoke(this, null);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine($"not found lane: {name}");
+            throw;
+        }
     }
 
     public void Exit()
@@ -119,9 +126,19 @@ public class MyAsyncHandler<TLane> : IAsyncRequestHandler<string, string> where 
 
     public async ValueTask<string> InvokeAsync(string request, CancellationToken cancellationToken = new())
     {
-        _lane.Run(request);
-        await Task.Delay(TimeSpan.FromSeconds(3), cancellationToken);
+        string status;
+        try
+        {
+            _lane.Run(request);
+            await Task.Delay(TimeSpan.FromSeconds(3), cancellationToken);
+            status = "success";
+        }
+        catch (Exception e)
+        {
+            status = "false";
+        }
+
         _lane.Exit();
-        return "success";
+        return status;
     }
 }
