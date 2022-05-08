@@ -8,11 +8,11 @@
       "hash": "529804da883a2d317474614af013e16a11010e94"
     },
     "com.cysharp.messagepipe.interprocess": {
-      "version": "https://github.com/Cysharp/MessagePipe.git?path=src/MessagePipe.Unity/Assets/Plugins/MessagePipe.Interprocess",
+      "version": "https://github.com/qkrsogusl3/MessagePipe-NamedPipe.git?path=src/MessagePipe.Unity/Assets/Plugins/MessagePipe.Interprocess",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "529804da883a2d317474614af013e16a11010e94"
+      "hash": "9c8bca4c25e812ffefa466e36814d65e954495ca"
     },
     "com.cysharp.messagepipe.vcontainer": {
       "version": "https://github.com/Cysharp/MessagePipe.git?path=src/MessagePipe.Unity/Assets/Plugins/MessagePipe.VContainer",

@@ -13,12 +13,16 @@ public static class Runner
         {
             services.AddSingleton(typeof(TLane));
             services.AddMessagePipe();
-            services.AddMessagePipeTcpInterprocess("127.0.0.1", 3215, options => options.HostAsServer = true);
-            services.AddAsyncRequestHandler<MyAsyncHandler<TLane>>();
+            services.AddMessagePipeNamedPipeInterprocess("unitylane");
+            // services.AddMessagePipeTcpInterprocess("127.0.0.1", 3333, options => options.HostAsServer = true);
+
+            // services.AddAsyncRequestHandler<MyAsyncHandler<TLane>>();
+            // services.AddAsyncRequestHandler<EnumAsyncHandler>();
         });
 
         var app = builder.Build();
-        app.Services.GetService<IRemoteRequestHandler<string, string>>(); //Listen
+        // app.Services.GetService<IRemoteRequestHandler<string, string>>(); //Listen
+        // app.Services.GetService<IRemoteRequestHandler<string, int>>(); //Listen
         app.AddCommands<RunnerCommand<TLane>>();
         app.Run();
     }
@@ -40,7 +44,7 @@ public class RunnerCommand<TLane> : ConsoleAppBase where TLane : LaneBase
     }
 
     [RootCommand]
-    public async Task Run(TLane lane, [Option("l")] string? laneName = null)
+    public async Task Run(TLane lane,IDistributedPublisher<string,string> publisher, [Option("l")] string? laneName = null)
     {
         lane.SelectLane(laneName);
         // you can write infinite-loop while stop request(Ctrl+C or docker terminate).
@@ -51,6 +55,7 @@ public class RunnerCommand<TLane> : ConsoleAppBase where TLane : LaneBase
                 try
                 {
                     Console.Write(".");
+                    await publisher.PublishAsync("project", ".");
                 }
                 catch (Exception ex)
                 {
@@ -138,7 +143,15 @@ public class MyAsyncHandler<TLane> : IAsyncRequestHandler<string, string> where 
             status = "false";
         }
 
-        _lane.Exit();
+        // _lane.Exit();
         return status;
+    }
+}
+
+public class EnumAsyncHandler : IAsyncRequestHandler<string, int>
+{
+    public async ValueTask<int> InvokeAsync(string request, CancellationToken cancellationToken = new CancellationToken())
+    {
+        return request.Length;
     }
 }
