@@ -1,26 +1,5 @@
 {
   "dependencies": {
-    "com.cysharp.messagepipe": {
-      "version": "https://github.com/Cysharp/MessagePipe.git?path=src/MessagePipe.Unity/Assets/Plugins/MessagePipe",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "529804da883a2d317474614af013e16a11010e94"
-    },
-    "com.cysharp.messagepipe.interprocess": {
-      "version": "https://github.com/qkrsogusl3/MessagePipe-NamedPipe.git?path=src/MessagePipe.Unity/Assets/Plugins/MessagePipe.Interprocess",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "9c8bca4c25e812ffefa466e36814d65e954495ca"
-    },
-    "com.cysharp.messagepipe.vcontainer": {
-      "version": "https://github.com/Cysharp/MessagePipe.git?path=src/MessagePipe.Unity/Assets/Plugins/MessagePipe.VContainer",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "529804da883a2d317474614af013e16a11010e94"
-    },
     "com.cysharp.unitask": {
       "version": "https://github.com/Cysharp/UniTask.git?path=src/UniTask/Assets/Plugins/UniTask",
       "depth": 0,
@@ -28,12 +7,12 @@
       "dependencies": {},
       "hash": "9e2163616b9c527fa9461544e2bcc5f93fd12d83"
     },
-    "com.neuecc.messagepack": {
-      "version": "https://github.com/neuecc/MessagePack-CSharp.git/?path=src/MessagePack.UnityClient/Assets/Scripts/MessagePack",
+    "com.qkrsogusl3.yamldotnet-upm": {
+      "version": "https://github.com/qkrsogusl3/YamlDotNet-UPM.git?path=YamlDotNet.Unity/Packages/YamlDotNet#upm",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "270e04c1552024408e66d5921c6f8da42bd64737"
+      "hash": "690bfad35f7b180bcc8810dcc1dad2610292679b"
     },
     "com.unity.2d.animation": {
       "version": "7.0.3",

@@ -1,0 +1,34 @@
+jobs:
+  build-apk:
+    platform: android
+    envs:
+      ENV1: test1
+    player-settings:
+      company-name: $ENV_1
+      product-name: ""
+      package-name: ""
+      version: ""
+      architectures:
+        - "ARMv7"
+        - "ARM64"
+      keystore:
+        path: "$ENV_PATH"
+        passwd: "$ENV_PATH"
+        alias: "$ENV_PATH"
+        alias-passwd: "$ENV_PATH"
+    steps:
+      - run: "AutoIncrementVersionCode"
+        args:
+          a: "1"
+          b: 2
+      - run: "Build"
+      - name: "Upload to AppCenter"
+        run: "Process"
+        args:
+          exec: "bundle"
+          args:
+            - "exec"
+            - "fastlane"
+            - "android"
+            - "upload_appcenter"
+  
