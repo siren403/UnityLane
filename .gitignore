@@ -1,3 +1,7 @@
+*.keystore
+*.log
+.env
+.vscode
 .idea
 # Created by https://www.toptal.com/developers/gitignore/api/Unity,DotnetCore
 # Edit at https://www.toptal.com/developers/gitignore?templates=Unity,DotnetCore

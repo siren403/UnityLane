@@ -1,34 +1,39 @@
 jobs:
   build-apk:
     platform: android
-    envs:
+    env:
       ENV1: test1
     player-settings:
-      company-name: $ENV_1
-      product-name: ""
-      package-name: ""
-      version: ""
+      company-name: company
+      product-name: UnityLane
+      package-name: com.company.unitylane
+      version: 1.0.0
+      # only android 
       architectures:
         - "ARMv7"
         - "ARM64"
       keystore:
-        path: "$ENV_PATH"
-        passwd: "$ENV_PATH"
-        alias: "$ENV_PATH"
-        alias-passwd: "$ENV_PATH"
+        path: $(KEYSTORE_PATH)
+        passwd: $(KEYSTORE_PASSWD)
+        alias: $(KEYSTORE_ALIAS)
+        alias-passwd: $(KEYSTORE_ALIAS_PASSWD)
     steps:
-      - run: "AutoIncrementVersionCode"
-        args:
-          a: "1"
+      - uses: auto-increment-version-code
+        with:
+          a: 1
           b: 2
-      - run: "Build"
-      - name: "Upload to AppCenter"
-        run: "Process"
-        args:
-          exec: "bundle"
-          args:
-            - "exec"
-            - "fastlane"
-            - "android"
-            - "upload_appcenter"
+#      - run: "AutoIncrementVersionCode"
+#        args:
+#          a: "1"
+#          b: 2
+#      - run: "Build"
+#      - name: "Upload to AppCenter"
+#        run: "Process"
+#        args:
+#          exec: "bundle"
+#          args:
+#            - "exec"
+#            - "fastlane"
+#            - "android"
+#            - "upload_appcenter"
   

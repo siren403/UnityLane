@@ -2,11 +2,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using UnityEngine;
 
 namespace UnityLane.Editor.ConfigSandbox
 {
-    public static class Env
+    public static class DotEnv
     {
         private static readonly Dictionary<string, string> Variables = new();
 
@@ -21,7 +22,7 @@ namespace UnityLane.Editor.ConfigSandbox
                 ReadCommandLineArgs(Variables);
             }
         }
-        
+
 
         private static void ReadCommandLineArgs(Dictionary<string, string> dictionary, bool isOverwrite = true)
         {
@@ -97,25 +98,65 @@ namespace UnityLane.Editor.ConfigSandbox
         }
 
         public static IReadOnlyDictionary<string, string> Read() => Variables;
+        public static IDictionary<string, string> ReadMutable() => Variables;
         public static string GetValue(string key) => Variables[key];
         public static bool Contains(string key) => Variables.ContainsKey(key);
 
+        public static FluentBuilder Fluent()
+        {
+            return new FluentBuilder();
+        }
+
         public class FluentBuilder
         {
-            private bool isOverwrite = true;
+            private bool _isOverwrite = true;
 
-            public void WithoutOverwriteVariable()
+            private readonly Dictionary<string, string> _runtimeScopeEnvs = new();
+
+            public FluentBuilder()
             {
+                Variables.Clear();
+            }
+
+            public FluentBuilder WithoutOverwriteVariable()
+            {
+                _isOverwrite = false;
+                return this;
+            }
+
+            public FluentBuilder SetEnv(string key, string value, bool isOverwrite = true)
+            {
+                if (!string.IsNullOrEmpty(key))
+                {
+                    Add(Variables, key, value, isOverwrite);
+                }
+
+                return this;
             }
 
             public void Load()
             {
+                ReadEnvironmentVariables(Variables, _isOverwrite);
+                ReadEnvironmentFile(".env", Variables, _isOverwrite);
+
+                if (!Application.isBatchMode)
+                {
+                    ReadCommandLineArgs(Variables, _isOverwrite);
+                }
+
+                DotEnv.Load();
             }
 
             public IReadOnlyDictionary<string, string> Read()
             {
                 Load();
-                return Env.Read();
+                return DotEnv.Read();
+            }
+
+            public Dictionary<string, string> Copy()
+            {
+                Load();
+                return DotEnv.Read().ToDictionary(_ => _.Key, _ => _.Value);
             }
         }
     }
