@@ -59,7 +59,7 @@ namespace UnityLane.Editor.ConfigSandbox
 
             foreach (var step in job.steps)
             {
-                executor.Execute();
+                executor.Execute(_context, step.uses, step.with);
             }
         }
 

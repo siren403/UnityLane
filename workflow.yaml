@@ -20,8 +20,8 @@ jobs:
     steps:
       - uses: auto-increment-version-code
         with:
-          a: 1
-          b: 2
+          a: !!int 1
+          b: "str"
 #      - run: "AutoIncrementVersionCode"
 #        args:
 #          a: "1"
