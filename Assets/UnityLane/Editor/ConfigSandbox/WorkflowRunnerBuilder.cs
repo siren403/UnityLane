@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using UnityEditor;
+using UnityLane.Editor.ConfigSandbox.Actions;
+using YamlDotNet.Core;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -8,20 +11,6 @@ namespace UnityLane.Editor.ConfigSandbox
 {
     public class WorkflowRunnerBuilder
     {
-        private static IDeserializer CreateDeserializer()
-        {
-            return new DeserializerBuilder()
-                .WithNamingConvention(HyphenatedNamingConvention.Instance)
-                .Build();
-        }
-
-        private static Workflow LoadWorkflow(string filePath)
-        {
-            var path = Path.Combine(Directory.GetCurrentDirectory(), filePath);
-            using var reader = new StreamReader(path);
-            return CreateDeserializer().Deserialize<Workflow>(reader.ReadToEnd());
-        }
-
         private string _filePath = "workflow.yaml";
         private bool _enableLoadEnv;
         private string _jobName;
@@ -56,6 +45,10 @@ namespace UnityLane.Editor.ConfigSandbox
             {
                 envs = DotEnv.Fluent().Copy();
             }
+            else
+            {
+                envs = new Dictionary<string, string>();
+            }
 
             var argumentView = new WorkflowArgumentView(envs);
             if (!string.IsNullOrEmpty(_jobName))
@@ -63,9 +56,28 @@ namespace UnityLane.Editor.ConfigSandbox
                 argumentView.JobName = _jobName;
             }
 
-            var workflow = LoadWorkflow(_filePath);
+            var actionExecutor = new WorkflowActionRunner();
 
-            return new WorkflowRunner(workflow, argumentView);
+            var deserializerBuilder = new DeserializerBuilder()
+                .WithNamingConvention(HyphenatedNamingConvention.Instance);
+
+            actionExecutor.Registration(deserializerBuilder);
+
+            var deserializer = deserializerBuilder.Build();
+
+            var path = Path.Combine(Directory.GetCurrentDirectory(), _filePath);
+            using var reader = new StreamReader(path);
+            var workflow = deserializer.Deserialize<Workflow>(reader.ReadToEnd());
+
+            if (workflow.env != null)
+            {
+                foreach (var pair in workflow.env)
+                {
+                    envs[pair.Key] = pair.Value;
+                }
+            }
+
+            return new WorkflowRunner(workflow, argumentView, actionExecutor);
         }
     }
 }

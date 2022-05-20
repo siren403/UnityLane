@@ -1,39 +1,23 @@
+env:
+  COMPANY: tiny
+  PRODUCT_NAME: UnityLane2
 jobs:
   build-apk:
     platform: android
-    env:
-      ENV1: test1
-    player-settings:
-      company-name: company
-      product-name: UnityLane
-      package-name: com.company.unitylane
-      version: 1.0.0
-      # only android 
-      architectures:
-        - "ARMv7"
-        - "ARM64"
-      keystore:
-        path: $(KEYSTORE_PATH)
-        passwd: $(KEYSTORE_PASSWD)
-        alias: $(KEYSTORE_ALIAS)
-        alias-passwd: $(KEYSTORE_ALIAS_PASSWD)
     steps:
-      - uses: auto-increment-version-code
+      - uses: player-settings
         with:
-          a: !!int 1
-          b: "str"
-#      - run: "AutoIncrementVersionCode"
-#        args:
-#          a: "1"
-#          b: 2
-#      - run: "Build"
-#      - name: "Upload to AppCenter"
-#        run: "Process"
-#        args:
-#          exec: "bundle"
-#          args:
-#            - "exec"
-#            - "fastlane"
-#            - "android"
-#            - "upload_appcenter"
+          company-name: $(COMPANY)_2
+          product-name: $(PRODUCT_NAME)
+          version: 1.0.1
+      - uses: player-settings-android
+        with:
+          architectures: !architectures
+            - "ARMv7"
+            - "ARM64"
+          keystore: !keystore
+            path: $(KEYSTORE_PATH)
+            passwd: $(KEYSTORE_PASSWD)
+            alias: $(KEYSTORE_ALIAS)
+            alias-passwd: $(KEYSTORE_ALIAS_PASSWD)
   
