@@ -4,7 +4,8 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "UnityLane.Editor"
+        "UnityLane.Editor",
+        "YamlDotNet"
     ],
     "includePlatforms": [
         "Editor"

@@ -8,12 +8,13 @@ namespace UnityLane.Editor.ConfigSandbox
         [MenuItem("UnityLane/Run")]
         public static void Run()
         {
-            var runner = new WorkflowRunnerBuilder()
-                .LoadEnvironmentVariables()
-                .SetJobName("build-apk")
-                .Build();
-            runner.Run();
-            Debug.Log("Success");
+            Bootstrap.Run("build-apk");
+        }
+
+        [MenuItem("UnityLane/Run - Command")]
+        public static void RunCommand()
+        {
+            Bootstrap.Run("run-command");
         }
     }
 }

@@ -95,16 +95,15 @@ namespace UnityLane.Editor.ConfigSandbox
                     matchedConstructor = constructorInfo;
                 }
 
-                var instance = matchedConstructor?.Invoke(parameters.ToArray()) as IAction;
-                if (instance != null)
+                if (matchedConstructor?.Invoke(parameters.ToArray()) is IAction instance)
                 {
-                    if ((instance.Targets & context.Target) > 0)
+                    if ((instance.Targets & context.CurrentTargets.TargetPlatform) > 0)
                     {
                         instance.Execute(context);
                     }
                     else
                     {
-                        Debug.LogWarning($"[Action] {name} is not support {context.Target}");
+                        Debug.LogWarning($"[Action] {name} is not support {context.CurrentTargets}");
                     }
                 }
             }

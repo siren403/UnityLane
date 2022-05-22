@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -15,13 +16,28 @@ namespace UnityLane.Editor.ConfigSandbox
         All = Int32.MaxValue,
     }
 
+    public readonly struct BuildTargets
+    {
+        public readonly TargetPlatform TargetPlatform;
+        public readonly BuildTarget Target;
+        public readonly BuildTargetGroup TargetGroup;
+
+        public BuildTargets(TargetPlatform targetPlatform, BuildTarget target, BuildTargetGroup targetGroup)
+        {
+            TargetPlatform = targetPlatform;
+            Target = target;
+            TargetGroup = targetGroup;
+        }
+    }
+
+
     public class WorkflowRunner
     {
-        private static readonly Dictionary<string, (BuildTarget, BuildTargetGroup, TargetPlatform)>
+        private static readonly Dictionary<string, BuildTargets>
             PlatformNameToTargets = new()
             {
-                {"android", (BuildTarget.Android, BuildTargetGroup.Android, TargetPlatform.Android)},
-                {"ios", (BuildTarget.iOS, BuildTargetGroup.iOS, TargetPlatform.iOS)},
+                {"android", new BuildTargets(TargetPlatform.Android, BuildTarget.Android, BuildTargetGroup.Android)},
+                {"ios", new BuildTargets(TargetPlatform.iOS, BuildTarget.iOS, BuildTargetGroup.iOS)},
             };
 
         private readonly WorkflowArgumentView _argumentView;
@@ -55,15 +71,20 @@ namespace UnityLane.Editor.ConfigSandbox
 
             if (!Application.isBatchMode)
             {
-                //switch platform
-                var isSuccess = EditorUserBuildSettings.SwitchActiveBuildTarget(targets.Item2, targets.Item1);
-                if (!isSuccess) throw new Exception("[UnityLane] SwitchPlatform Failed!");
+                buildTarget = targets.Target;
+                buildTargetGroup = targets.TargetGroup;
 
-                buildTarget = targets.Item1;
-                buildTargetGroup = targets.Item2;
+                //switch platform
+                var isSuccess = EditorUserBuildSettings.SwitchActiveBuildTarget(buildTargetGroup, buildTarget);
+                if (!isSuccess) throw new Exception("[UnityLane] SwitchPlatform Failed!");
             }
 
-            _context = new WorkflowContext(_argumentView, targets.Item3);
+            _argumentView.Platform = job.platform;
+            _argumentView.BuildTarget = buildTarget.ToString();
+            _argumentView.BuildTargetGroup = buildTargetGroup.ToString();
+            _argumentView.ProjectPath = Directory.GetCurrentDirectory();
+
+            _context = new WorkflowContext(_argumentView, targets);
 
             foreach (var step in job.steps)
             {

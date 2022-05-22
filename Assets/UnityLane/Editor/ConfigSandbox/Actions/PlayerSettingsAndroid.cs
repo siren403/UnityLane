@@ -39,8 +39,18 @@ namespace UnityLane.Editor.ConfigSandbox.Actions
 
         public void Execute(WorkflowContext context)
         {
+            if (_with.TryGetIsValue("package-name", out string packageName))
+            {
+                PlayerSettings.SetApplicationIdentifier(BuildTargetGroup.Android, context.Format(packageName));
+            }
+
             if (_with.TryGetIsValue("architectures", out AndroidArchitecture[] architectures))
             {
+                if (architectures.Contains(AndroidArchitecture.ARM64))
+                {
+                    PlayerSettings.SetScriptingBackend(BuildTargetGroup.Android, ScriptingImplementation.IL2CPP);
+                }
+
                 PlayerSettings.Android.targetArchitectures = architectures
                     .Aggregate((acc, current) => acc | current);
             }
@@ -57,6 +67,13 @@ namespace UnityLane.Editor.ConfigSandbox.Actions
             {
                 PlayerSettings.Android.useCustomKeystore = false;
             }
+
+            if (_with.Is("increment-version-code"))
+            {
+                PlayerSettings.Android.bundleVersionCode++;
+            }
+
+            PlayerSettings.Android.optimizedFramePacing = _with.Is("optimized-frame-pacing");
         }
     }
 }

@@ -1,4 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Text.RegularExpressions;
+using UnityEditor;
+using UnityEngine;
 
 namespace UnityLane.Editor.ConfigSandbox.Actions
 {
@@ -14,6 +18,35 @@ namespace UnityLane.Editor.ConfigSandbox.Actions
             }
 
             return value != null;
+        }
+
+        public static bool Is(this Dictionary<string, object> dictionary, string key, bool defaultValue = false)
+        {
+            if (dictionary.TryGetValue(key, out var value) && value is string str)
+            {
+                if (Regex.IsMatch(str, "^(true|y|yes|on)$", RegexOptions.IgnoreCase))
+                {
+                    return true;
+                }
+                else if (Regex.IsMatch(str, "^(false|n|no|off)$", RegexOptions.IgnoreCase))
+                {
+                    return false;
+                }
+                else
+                {
+                    throw new FormatException($"The value \"{value}\" is not a valid YAML Boolean");
+                }
+            }
+
+            return defaultValue;
+        }
+
+        public static void OpenFolder(string path)
+        {
+            if (!Application.isBatchMode)
+            {
+                EditorUtility.RevealInFinder(path);
+            }
         }
     }
 }

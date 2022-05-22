@@ -4,11 +4,11 @@
     {
         private readonly WorkflowArgumentView _argumentView;
 
-        public TargetPlatform Target { get; }
-        public WorkflowContext(WorkflowArgumentView argumentView, TargetPlatform target)
+        public BuildTargets CurrentTargets { get; }
+        public WorkflowContext(WorkflowArgumentView argumentView, BuildTargets currentTargets)
         {
             _argumentView = argumentView;
-            Target = target;
+            CurrentTargets = currentTargets;
         }
 
         public string Format(string format) => _argumentView.Format(format);

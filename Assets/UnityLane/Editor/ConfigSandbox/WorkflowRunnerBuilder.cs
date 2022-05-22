@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using UnityEditor;
-using UnityLane.Editor.ConfigSandbox.Actions;
-using YamlDotNet.Core;
+using UnityEngine;
 using YamlDotNet.Serialization;
 using YamlDotNet.Serialization.NamingConventions;
 
@@ -48,6 +46,11 @@ namespace UnityLane.Editor.ConfigSandbox
             else
             {
                 envs = new Dictionary<string, string>();
+            }
+
+            foreach (var env in envs)
+            {
+                Debug.Log($"{env.Key} {env.Value}");
             }
 
             var argumentView = new WorkflowArgumentView(envs);

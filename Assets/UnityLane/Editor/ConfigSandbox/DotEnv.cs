@@ -17,7 +17,7 @@ namespace UnityLane.Editor.ConfigSandbox
             ReadEnvironmentVariables(Variables);
             ReadEnvironmentFile(".env", Variables);
 
-            if (!Application.isBatchMode)
+            if (Application.isBatchMode)
             {
                 ReadCommandLineArgs(Variables);
             }
@@ -139,12 +139,10 @@ namespace UnityLane.Editor.ConfigSandbox
                 ReadEnvironmentVariables(Variables, _isOverwrite);
                 ReadEnvironmentFile(".env", Variables, _isOverwrite);
 
-                if (!Application.isBatchMode)
+                if (Application.isBatchMode)
                 {
                     ReadCommandLineArgs(Variables, _isOverwrite);
                 }
-
-                DotEnv.Load();
             }
 
             public IReadOnlyDictionary<string, string> Read()
